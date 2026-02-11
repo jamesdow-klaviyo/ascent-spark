@@ -27,7 +27,7 @@ function run(cmd, opts = {}) {
   try {
     execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts });
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
