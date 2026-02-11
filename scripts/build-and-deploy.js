@@ -11,6 +11,7 @@
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getOriginInfo } from './lib/get-repo-name.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -19,10 +20,7 @@ function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts });
 }
 
-// Repo name from origin URL (e.g. "my-fork" for .../username/my-fork.git)
-const origin = execSync('git config --get remote.origin.url', { encoding: 'utf-8', cwd: ROOT }).trim();
-const match = origin.match(/([^/]+?)(\.git)?$/);
-const repoName = match ? match[1] : 'vite-react-pages';
+const { owner, repoName } = getOriginInfo();
 const basePath = `/${repoName}/`;
 
 console.log(`[deploy] Building with base: ${basePath}`);
@@ -31,4 +29,4 @@ run(`npm run build`, { env: { ...process.env, BASE_PATH: basePath } });
 console.log('[deploy] Pushing dist to gh-pages branch...');
 run(`npx gh-pages -d dist`);
 console.log('[deploy] Done. Site will update at your GitHub Pages URL shortly.');
-console.log(`[deploy] If you use ...github.io/${repoName}/, check: https://<user>.github.io/${repoName}/`);
+console.log(`[deploy] If you use ...github.io/${repoName}/, check: https://${owner}.github.io/${repoName}/`);

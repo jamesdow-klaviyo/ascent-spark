@@ -22,11 +22,11 @@ Your live site will be at **`https://<your-username>.github.io/<repo-name>/`** (
 
 ## Deploy to GitHub Pages
 
-| Command | What it does |
-|--------|----------------|
-| `npm run deploy` | Build once and push `dist` to the `gh-pages` branch. |
+| Command              | What it does                                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run deploy`     | Build once and push `dist` to the `gh-pages` branch.                                           |
 | `npm run watch:push` | Watch for file changes; after ~8s idle, build, deploy to `gh-pages`, and commit + push source. |
-| `npm run dev:all` | Run **Vite dev** (instant HMR) and **watch:push** in one terminal. |
+| `npm run dev:all`    | Run **Vite dev** (instant HMR) and **watch:push** in one terminal.                             |
 
 Both use your fork’s repo name automatically. After deploy, allow 30–90 seconds for the live URL to update.
 
@@ -69,6 +69,7 @@ Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) i
 1. **Add a folder** under `projects/`, e.g. `projects/my-thing/`.
 
 2. **Add `index.tsx`** that exports at least the layout:
+
    ```tsx
    export default function MyThing() {
      return (
@@ -76,27 +77,31 @@ Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) i
          <h1>My thing</h1>
          <Link to="/">← All projects</Link>
        </div>
-     )
+     );
    }
    ```
+
    The new route will be **`/my-thing`** (from the folder name). It appears on the homepage list automatically.
 
 3. **(Optional) Add sub-routes** by exporting `routes` and using `<Outlet />` in the layout:
+
    ```tsx
-   import { Link, Outlet } from 'react-router-dom'
+   import { Link, Outlet } from "react-router-dom";
 
    export default function MyThing() {
      return (
        <div>
-         <nav><Link to=".">Home</Link> <Link to="step1">Step 1</Link></nav>
+         <nav>
+           <Link to=".">Home</Link> <Link to="step1">Step 1</Link>
+         </nav>
          <Outlet />
        </div>
-     )
+     );
    }
    export const routes = [
-     { path: '/', Component: () => <div>Index</div> },
-     { path: 'step1', Component: () => <div>Step 1</div> },
-   ]
+     { path: "/", Component: () => <div>Index</div> },
+     { path: "step1", Component: () => <div>Step 1</div> },
+   ];
    ```
 
 4. **(Optional)** Export `title` and/or `description` for the homepage list (e.g. `export const title = 'My Thing'`).

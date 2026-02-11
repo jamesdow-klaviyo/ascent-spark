@@ -11,6 +11,7 @@ import chokidar from 'chokidar';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getOriginInfo, getRepoName } from './lib/get-repo-name.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -21,17 +22,6 @@ const COMMIT_MSG = 'chore: auto sync';
 
 let timeout = null;
 let cooldownUntil = 0;
-
-// Repo name from origin URL (e.g. "my-fork" for .../username/my-fork.git)
-function getRepoName() {
-  try {
-    const origin = execSync('git config --get remote.origin.url', { encoding: 'utf-8', cwd: ROOT }).trim();
-    const match = origin.match(/([^/]+?)(\.git)?$/);
-    return match ? match[1] : 'ibm-homepage';
-  } catch {
-    return 'vite-react-pages';
-  }
-}
 
 function run(cmd, opts = {}) {
   try {
@@ -48,11 +38,10 @@ function buildAndDeploy() {
   const basePath = `/${repoName}/`;
   console.log('\n[watch-and-push] Changes detected, building and deploying...');
   console.log(`[watch-and-push] Building with base: ${basePath}`);
-  if (!run('npm run build', { env: { ...process.env, BASE_PATH: basePath } })) {
+  const buildOk = run('npm run build', { env: { ...process.env, BASE_PATH: basePath } });
+  if (!buildOk) {
     console.error('[watch-and-push] Build failed.');
-    return;
-  }
-  if (run('npx gh-pages -d dist')) {
+  } else if (run('npx gh-pages -d dist')) {
     console.log('[watch-and-push] Deployed dist to gh-pages.');
     console.log(`[watch-and-push] URL: https://<owner>.github.io/${repoName}/ (use trailing slash)`);
     console.log('[watch-and-push] If you don\'t see changes: Settings → Pages → Source = "Deploy from a branch" → gh-pages');
@@ -60,7 +49,7 @@ function buildAndDeploy() {
     console.error('[watch-and-push] gh-pages push failed.');
   }
 
-  // Commit and push source to current branch so work isn't lost
+  // Always commit and push source to current branch (even if build failed) so work isn't lost
   run('git add -A');
   const hasStaged = run('git diff --staged --quiet', { stdio: 'pipe' }) === false;
   if (hasStaged) {
@@ -117,8 +106,16 @@ watcher.on('error', (err) => {
   console.error('[watch-and-push]', err.message);
 });
 
-const repoName = getRepoName();
+function shutdown() {
+  if (timeout) clearTimeout(timeout);
+  watcher.close();
+  process.exit(0);
+}
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+const { owner, repoName } = getOriginInfo();
 console.log(`[watch-and-push] Watching for changes (debounce ${DEBOUNCE_MS / 1000}s, cooldown ${COOLDOWN_MS / 1000}s after deploy). Will build, deploy to gh-pages, and commit + push source.`);
-console.log(`[watch-and-push] Pages URL: https://<owner>.github.io/${repoName}/ (trailing slash required)`);
+console.log(`[watch-and-push] Pages URL: https://${owner}.github.io/${repoName}/ (trailing slash required)`);
 console.log('[watch-and-push] Require: Settings → Pages → Source = "Deploy from a branch" → branch gh-pages');
 console.log('[watch-and-push] Edit files and wait a few seconds to auto-deploy.\n');

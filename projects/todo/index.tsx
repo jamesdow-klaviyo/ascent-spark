@@ -12,8 +12,9 @@ import {
   CardTitle,
 } from "./components/card";
 
-export const title = "Todo";
-export const description = "Basic todo template — add, complete, and remove tasks.";
+export const title = "Todo a";
+export const description =
+  "Basic todo template — add, complete, and remove tasks.";
 
 export type TodoItem = {
   id: string;
