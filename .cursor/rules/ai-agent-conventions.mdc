@@ -1,0 +1,48 @@
+---
+description: AI agent conventions — project model, where to edit, and what to avoid
+alwaysApply: true
+---
+
+# AI Agent Conventions for Ascent Spark
+
+This repo is a **project gallery**: the homepage lists all projects from `projects/`. Prefer working inside `projects/` and avoid changing app internals or config unless the user explicitly asks.
+
+## Project model
+
+- **Projects** live under `projects/<name>/`. Each project is a route (e.g. `/example`).
+- The homepage and routing are **auto-generated** from folder names; no registration step.
+- Only **`index.tsx`** is required per project. Optionally add `index.css`, `components/`, or `lib/` inside that project folder.
+
+## When adding or changing features
+
+- **New app or prototype** → Add a new folder under `projects/<name>/` with `index.tsx` (see below). Do **not** modify `src/` or config.
+- **Change to an existing project** → Edit only files inside `projects/<that-project>/` (e.g. `projects/todo/index.tsx`).
+- **Avoid unless asked**: Editing `src/` (App.tsx, main.tsx, registry.tsx), `vite.config.ts`, `tsconfig.json`, `package.json`, `scripts/`, or `index.html`.
+
+## Creating a new project
+
+1. Create `projects/<name>/index.tsx`.
+2. Export **`default`** = layout component. Use `<Link to="/">← All projects</Link>` and, for sub-routes, `<Outlet />` plus exported **`routes`**.
+3. Route path comes from the folder name (e.g. `projects/my-app/` → `/my-app`). It appears on the homepage automatically.
+
+**Minimal example:**
+
+```tsx
+import { Link, Outlet } from 'react-router-dom'
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>My App</h1>
+      <Link to="/">← All projects</Link>
+      <Outlet />
+    </div>
+  )
+}
+export const routes = [
+  { path: '/', Component: () => <div>Index</div> },
+  { path: 'step1', Component: () => <div>Step 1</div> },
+]
+```
+
+Keep project-specific CSS, components, and helpers inside that project folder (e.g. `projects/my-app/components/`, `projects/my-app/index.css`). See `projects/example/` and `projects/todo/` for reference.

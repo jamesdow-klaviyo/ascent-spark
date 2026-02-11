@@ -1,5 +1,5 @@
 import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom'
-import { getProjectRoutes, projectNames } from './registry'
+import { getProjectRoutes, projectMeta } from './registry'
 
 const base = import.meta.env.BASE_URL
 
@@ -20,15 +20,18 @@ function HomePage() {
       <p style={{ color: '#666', marginBottom: '1.5rem' }}>
         Each link is a React route. Add a folder under <code>projects/</code> (project root) with an <code>index.tsx</code> to add one.
       </p>
-      {projectNames.length === 0 ? (
+      {projectMeta.length === 0 ? (
         <p>No projects yet. Add <code>projects/my-name/index.tsx</code> (export default + optional <code>routes</code>).</p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {projectNames.map((name) => (
-            <li key={name} style={{ marginBottom: '0.5rem' }}>
-              <Link to={name} style={{ color: '#0066cc' }}>
-                {name}
+          {projectMeta.map(({ name, title, description }) => (
+            <li key={name} style={{ marginBottom: '1rem' }}>
+              <Link to={name} style={{ color: '#0066cc', fontWeight: 500 }}>
+                {title ?? name}
               </Link>
+              {description != null && (
+                <p style={{ margin: '0.25rem 0 0', color: '#666', fontSize: '0.9rem' }}>{description}</p>
+              )}
             </li>
           ))}
         </ul>

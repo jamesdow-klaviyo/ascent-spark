@@ -1,6 +1,6 @@
 # Ascent Spark
 
-**Vite**, **React**, **TypeScript**. Homepage lists all **prototypes** from a single folder; fork, enable GitHub Pages once, then run and deploy with no config.
+**Vite**, **React**, **TypeScript**. Homepage lists all **projects** from a single folder; fork, enable GitHub Pages once, then run and deploy with no config.
 
 ---
 
@@ -14,7 +14,7 @@
    npm install
    npm run dev
    ```
-4. Open [http://localhost:5173](http://localhost:5173). The homepage lists all prototypes; each is a route (e.g. `/example`) with optional sub-routes.
+4. Open [http://localhost:5173](http://localhost:5173). The homepage lists all projects; each is a route (e.g. `/example`) with optional sub-routes.
 
 Your live site will be at **`https://<your-username>.github.io/<repo-name>/`** (use the trailing slash). Base path and deploys use your repo name from `git remote` — no configuration needed.
 
@@ -34,23 +34,25 @@ Both use your fork’s repo name automatically. After deploy, allow 30–90 seco
 
 ---
 
-## Prototypes
+## Projects
 
-Each prototype is a **React route** under **`prototypes/`** (project root). Add a folder (e.g. `prototypes/my-app/`) with an **`index.tsx`** that exports:
+Each project is a **React route** under **`projects/`** (project root). Add a folder (e.g. `projects/my-app/`) with an **`index.tsx`** that exports:
 
 - **`default`** – The layout component (use `<Outlet />` for sub-routes and `<Link>` for nav).
 - **`routes`** (optional) – Array of `{ path, Component }` for sub-routes (e.g. `{ path: 'step1', Component: Step1 }`). Use `path: '/'` (or `''`) for the index view.
+- **`title`** (optional) – Display name on the homepage (defaults to the folder name).
+- **`description`** (optional) – Short blurb shown under the link on the homepage.
 
-The homepage list is built from the folder names in `prototypes/` at build time. Sub-routes give you in-prototype navigation (e.g. `/example/step1`).
+The homepage list is built from the folder names in `projects/` at build time. Sub-routes give you in-project navigation (e.g. `/example/step1`).
 
-### Prototype folder structure
+### Project folder structure
 
-Prototypes are **standalone**: keep each one’s code and assets inside its own folder.
+Projects are **standalone**: keep each one’s code and assets inside its own folder.
 
 **Minimal (e.g. `example`):**
 
 ```
-prototypes/
+projects/
   example/
     index.tsx          # default export = layout; optional routes
 ```
@@ -58,11 +60,11 @@ prototypes/
 **With its own UI and styles (e.g. `todo`):**
 
 ```
-prototypes/
+projects/
   todo/
     index.tsx          # layout + optional routes; can import local CSS
-    index.css          # optional: Tailwind + theme for this prototype only
-    components/        # optional: prototype-specific components
+    index.css          # optional: Tailwind + theme for this project only
+    components/       # optional: project-specific components
       button.tsx
       card.tsx
       ...
@@ -70,11 +72,11 @@ prototypes/
       utils.ts
 ```
 
-Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) is optional and scoped to that prototype.
+Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) is optional and scoped to that project.
 
-### How to create a new prototype
+### How to create a new project
 
-1. **Add a folder** under `prototypes/`, e.g. `prototypes/my-thing/`.
+1. **Add a folder** under `projects/`, e.g. `projects/my-thing/`.
 
 2. **Add `index.tsx`** that exports at least the layout:
    ```tsx
@@ -82,7 +84,7 @@ Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) i
      return (
        <div>
          <h1>My thing</h1>
-         <Link to="/">← All prototypes</Link>
+         <Link to="/">← All projects</Link>
        </div>
      )
    }
@@ -107,7 +109,8 @@ Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) i
    ]
    ```
 
-4. **(Optional)** For prototype-only styles or components, add `index.css`, `components/`, or `lib/` inside the same folder and import them from `index.tsx`. See `prototypes/todo/` for an example.
+4. **(Optional)** Export `title` and/or `description` for the homepage list (e.g. `export const title = 'My Thing'`).
+5. **(Optional)** For project-only styles or components, add `index.css`, `components/`, or `lib/` inside the same folder and import them from `index.tsx`. See `projects/todo/` for an example.
 
 ---
 

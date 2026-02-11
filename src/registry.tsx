@@ -4,6 +4,8 @@ import type { RouteObject } from 'react-router-dom'
 type ProjectModule = {
   default: ComponentType
   routes?: { path: string; Component: ComponentType }[]
+  title?: string
+  description?: string
 }
 
 const modules = import.meta.glob<ProjectModule>('../projects/*/index.tsx', { eager: true })
@@ -11,6 +13,18 @@ const modules = import.meta.glob<ProjectModule>('../projects/*/index.tsx', { eag
 export const projectNames = Object.keys(modules)
   .map((k) => k.replace('../projects/', '').replace('/index.tsx', ''))
   .sort()
+
+export type ProjectMeta = { name: string; title?: string; description?: string }
+
+export const projectMeta: ProjectMeta[] = projectNames.map((name) => {
+  const key = `../projects/${name}/index.tsx`
+  const mod = modules[key] as ProjectModule | undefined
+  return {
+    name,
+    title: mod?.title,
+    description: mod?.description,
+  }
+})
 
 export function getProjectRoutes(): RouteObject[] {
   const list: RouteObject[] = []

@@ -1,10 +1,13 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
+export const title = 'Example'
+export const description = 'Sample project with sub-routes (Overview, Step 1, Step 2).'
+
 function Overview() {
   return (
     <div>
       <h2>Overview</h2>
-      <p>This is the example prototype. Use the links above to try sub-routes.</p>
+      <p>This is the example project. Use the links above to try sub-routes.</p>
     </div>
   )
 }
