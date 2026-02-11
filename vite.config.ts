@@ -11,7 +11,7 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
-    host: '127.0.0.1',
+    host: process.env.VITE_HOST || '0.0.0.0',
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 5173,
     strictPort: false,
   },

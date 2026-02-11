@@ -71,10 +71,11 @@ function schedule() {
   timeout = setTimeout(buildAndDeploy, DEBOUNCE_MS);
 }
 
-// Watch only source/config (avoids node_modules and reduces file handles)
+// Watch source, config, and projects (avoids node_modules and reduces file handles)
 const watchDirs = [
   path.join(ROOT, 'src'),
   path.join(ROOT, 'public'),
+  path.join(ROOT, 'projects'),
   path.join(ROOT, '.github'),
   path.join(ROOT, 'index.html'),
   path.join(ROOT, 'vite.config.ts'),
