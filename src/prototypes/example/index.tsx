@@ -21,14 +21,14 @@ const base = import.meta.env.BASE_URL
 
 export default function ExamplePrototype() {
   const location = useLocation()
-  const basePath = `${base}prototypes/example`
+  const isOverview = location.pathname.endsWith('/example') || location.pathname.endsWith('/example/')
 
   return (
     <div style={{ padding: '1.5rem', fontFamily: 'system-ui, sans-serif' }}>
       <nav style={{ marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
-        <Link to={basePath} style={{ color: location.pathname === basePath || location.pathname === basePath + '/' ? '#000' : '#0066cc' }}>Overview</Link>
-        <Link to={`${basePath}/step1`} style={{ color: location.pathname.includes('step1') ? '#000' : '#0066cc' }}>Step 1</Link>
-        <Link to={`${basePath}/step2`} style={{ color: location.pathname.includes('step2') ? '#000' : '#0066cc' }}>Step 2</Link>
+        <Link to="." style={{ color: isOverview ? '#000' : '#0066cc' }}>Overview</Link>
+        <Link to="step1" style={{ color: location.pathname.includes('step1') ? '#000' : '#0066cc' }}>Step 1</Link>
+        <Link to="step2" style={{ color: location.pathname.includes('step2') ? '#000' : '#0066cc' }}>Step 2</Link>
         <Link to={base} style={{ marginLeft: 'auto', color: '#666' }}>← All prototypes</Link>
       </nav>
       <Outlet />
