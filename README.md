@@ -1,6 +1,6 @@
-# Vite + React → GitHub Pages
+# Ascent Spark
 
-Minimal starter: **Vite**, **React**, **TypeScript**. Homepage lists all **prototypes** from a single folder; fork, enable GitHub Pages once, then run and deploy with no config.
+**Vite**, **React**, **TypeScript**. Homepage lists all **prototypes** from a single folder; fork, enable GitHub Pages once, then run and deploy with no config.
 
 ---
 
@@ -41,7 +41,73 @@ Each prototype is a **React route** under **`prototypes/`** (project root). Add 
 - **`default`** – The layout component (use `<Outlet />` for sub-routes and `<Link>` for nav).
 - **`routes`** (optional) – Array of `{ path, Component }` for sub-routes (e.g. `{ path: 'step1', Component: Step1 }`). Use `path: '/'` (or `''`) for the index view.
 
-The homepage list is built from the folder names in `prototypes/` at build time. Sub-routes give you in-prototype navigation (e.g. `/example/step1`). See `prototypes/example/index.tsx` for the pattern.
+The homepage list is built from the folder names in `prototypes/` at build time. Sub-routes give you in-prototype navigation (e.g. `/example/step1`).
+
+### Prototype folder structure
+
+Prototypes are **standalone**: keep each one’s code and assets inside its own folder.
+
+**Minimal (e.g. `example`):**
+
+```
+prototypes/
+  example/
+    index.tsx          # default export = layout; optional routes
+```
+
+**With its own UI and styles (e.g. `todo`):**
+
+```
+prototypes/
+  todo/
+    index.tsx          # layout + optional routes; can import local CSS
+    index.css          # optional: Tailwind + theme for this prototype only
+    components/        # optional: prototype-specific components
+      button.tsx
+      card.tsx
+      ...
+    lib/               # optional: helpers (e.g. utils.ts for cn())
+      utils.ts
+```
+
+Only **`index.tsx`** is required. Everything else (CSS, `components/`, `lib/`) is optional and scoped to that prototype.
+
+### How to create a new prototype
+
+1. **Add a folder** under `prototypes/`, e.g. `prototypes/my-thing/`.
+
+2. **Add `index.tsx`** that exports at least the layout:
+   ```tsx
+   export default function MyThing() {
+     return (
+       <div>
+         <h1>My thing</h1>
+         <Link to="/">← All prototypes</Link>
+       </div>
+     )
+   }
+   ```
+   The new route will be **`/my-thing`** (from the folder name). It appears on the homepage list automatically.
+
+3. **(Optional) Add sub-routes** by exporting `routes` and using `<Outlet />` in the layout:
+   ```tsx
+   import { Link, Outlet } from 'react-router-dom'
+
+   export default function MyThing() {
+     return (
+       <div>
+         <nav><Link to=".">Home</Link> <Link to="step1">Step 1</Link></nav>
+         <Outlet />
+       </div>
+     )
+   }
+   export const routes = [
+     { path: '/', Component: () => <div>Index</div> },
+     { path: 'step1', Component: () => <div>Step 1</div> },
+   ]
+   ```
+
+4. **(Optional)** For prototype-only styles or components, add `index.css`, `components/`, or `lib/` inside the same folder and import them from `index.tsx`. See `prototypes/todo/` for an example.
 
 ---
 
