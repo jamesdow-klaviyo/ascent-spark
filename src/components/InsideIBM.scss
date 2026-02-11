@@ -1,0 +1,49 @@
+.inside-ibm {
+  padding: 3rem 0 4rem;
+  background: #fff;
+
+  &__heading {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    color: #161616;
+  }
+
+  &__col {
+    margin-bottom: 2rem;
+  }
+
+  &__block-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: #161616;
+  }
+
+  &__block-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #525252;
+    margin: 0 0 0.75rem;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    a {
+      font-size: 0.875rem;
+      color: #0f62fe;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    li + li {
+      margin-top: 0.25rem;
+    }
+  }
+}
