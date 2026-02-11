@@ -19,10 +19,10 @@ function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', cwd: ROOT, ...opts });
 }
 
-// Repo name from origin URL (e.g. "test" for .../jamesdow-klaviyo/test.git)
+// Repo name from origin URL (e.g. "my-fork" for .../username/my-fork.git)
 const origin = execSync('git config --get remote.origin.url', { encoding: 'utf-8', cwd: ROOT }).trim();
 const match = origin.match(/([^/]+?)(\.git)?$/);
-const repoName = match ? match[1] : 'ibm-homepage';
+const repoName = match ? match[1] : 'vite-react-pages';
 const basePath = `/${repoName}/`;
 
 console.log(`[deploy] Building with base: ${basePath}`);

@@ -1,59 +1,60 @@
-# IBM.com Homepage (React + Carbon)
+# Vite + React → GitHub Pages
 
-A recreation of the IBM.com homepage built with **Vite**, **React**, and the **Carbon Design System** (`@carbon/react`).
+Minimal starter: **Vite**, **React**, **TypeScript**. Homepage lists all **prototypes** from a single folder; fork, enable GitHub Pages once, then run and deploy with no config.
 
-## Setup
+---
+
+## Fork & run (quick start)
+
+1. **Fork** this repo, then **clone your fork** and go into the folder.
+2. **One-time: enable GitHub Pages**  
+   In your fork: **Settings → Pages** → **Source**: “Deploy from a branch” → **Branch**: `gh-pages` → **Folder**: `/ (root)` → **Save**.
+3. **Install and run:**
+   ```bash
+   npm install
+   npm run dev
+   ```
+4. Open [http://localhost:5173](http://localhost:5173). The homepage shows a list of all prototypes; each is a separate app in its own folder.
+
+Your live site will be at **`https://<your-username>.github.io/<repo-name>/`** (use the trailing slash). Base path and deploys use your repo name from `git remote` — no configuration needed.
+
+---
+
+## Deploy to GitHub Pages
+
+| Command | What it does |
+|--------|----------------|
+| `npm run deploy` | Build once and push `dist` to the `gh-pages` branch. |
+| `npm run watch:push` | Watch for file changes; after ~8s idle, build, deploy to `gh-pages`, and commit + push source. |
+| `npm run dev:all` | Run **Vite dev** (instant HMR) and **watch:push** in one terminal. |
+
+Both use your fork’s repo name automatically. After deploy, allow 30–90 seconds for the live URL to update.
+
+**If changes don’t show:** (1) **Settings → Pages** → branch **gh-pages**. (2) Use the URL with a **trailing slash**. (3) Hard refresh or incognito.
+
+---
+
+## Prototypes
+
+The **homepage** is a list of every subfolder in **`public/prototypes/`**. Add a folder there (e.g. `public/prototypes/my-app/`) with its own **`index.html`** (and any CSS/JS/assets); it appears on the list automatically. Each prototype is standalone — its own entry point and file structure. The list is regenerated when you run `npm run dev` or `npm run build`.
+
+---
+
+## Other commands
 
 ```bash
-cd ~/Desktop/ibm-homepage
-npm install
-npm run dev
+npm run dev:all    # Vite dev + watch:push in one terminal (HMR + auto-deploy)
+npm run build      # production build
+npm run preview    # serve production build locally
+npm run lint       # ESLint
 ```
 
-Then open [http://localhost:5173](http://localhost:5173).
+---
 
-**Twingate / remote access:** If the Network URL (e.g. `http://100.96.0.2:5173/`) doesn’t work, see [docs/TWINGATE-OPTIONS.md](docs/TWINGATE-OPTIONS.md) for options (Resource + Connector, tunnel, same LAN, firewall).
+## Deploy via GitHub Actions (optional)
 
-## GitHub Pages
+Set **Settings → Pages** → **Source** to **GitHub Actions** to deploy on every push to `main`. The included workflow builds and deploys; no need to run `deploy` or `watch:push` yourself.
 
-**Live URL:** [https://jamesdow-klaviyo.github.io/test/](https://jamesdow-klaviyo.github.io/test/) (include the trailing slash).
+---
 
-You can deploy in two ways:
-
-- **From GitHub Actions (default):** In **Settings → Pages**, set **Source** to **GitHub Actions**. Each push to `main` builds and deploys.
-- **From your machine (local build):** Build locally and push the `dist` folder to the `gh-pages` branch. In **Settings → Pages**, set **Source** to **Deploy from a branch**, branch **gh-pages** / **(root)**. Then run:
-  ```bash
-  npm run deploy
-  ```
-  This builds with the correct base path and publishes `dist` to `gh-pages`. No CI needed.
-
-### Auto-sync (watch + push)
-
-For quick prototype iteration, you can run a watcher that commits and pushes changes after you edit files (debounced ~8s), so each push triggers a gh-pages deploy:
-
-```bash
-npm run watch:push
-```
-
-Leave it running in a separate terminal. Edit files as usual; after a short pause it will `git add -A`, commit with message `chore: auto sync`, and push to `main`. Requires the repo to be a git clone with `origin` set and push access. If you see “too many open files”, run `ulimit -n 10240` and try again.
-
-## Build
-
-```bash
-npm run build
-npm run preview   # preview production build
-```
-
-## What's included
-
-- **Header** – Carbon UI Shell header with IBM logo, nav (Products, Solutions, Services, Industries, Support), search and menu actions
-- **Hero** – “Lead in the AI-first future” hero with primary/secondary CTAs
-- **Recommended for you** – Card grid (Canada’s AI moment, Airbus, Quantum safe, Courses)
-- **Case studies** – “Smarter business. Real impact.” (Ferrari, US Open, Avid Solutions)
-- **Promo strip** – SPSS Statistics offer
-- **Enterprise technology** – Grid of offerings (AI agents, Data for AI, Automation, Hybrid cloud, etc.)
-- **Inside IBM** – Our company, Our innovations, Our people
-- **Stay connected** – Latest News list
-- **Footer** – Links and copyright
-
-All sections use Carbon’s Grid, typography, and buttons where applicable, with custom SCSS for IBM.com-style layout and visuals.
+**Too many open files when running `watch:push`?** Run `ulimit -n 10240` and try again.

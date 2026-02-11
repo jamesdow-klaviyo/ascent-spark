@@ -1,3 +1,4 @@
+# Deploys to GitHub Pages on push to main. Works for any fork (uses repo name for base path).
 name: Deploy to GitHub Pages
 
 on:
