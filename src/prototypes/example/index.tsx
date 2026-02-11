@@ -21,7 +21,7 @@ const base = import.meta.env.BASE_URL
 
 export default function ExamplePrototype() {
   const location = useLocation()
-  const isOverview = location.pathname.endsWith('/example') || location.pathname.endsWith('/example/')
+  const isOverview = !location.pathname.match(/\/step\d$/)
 
   return (
     <div style={{ padding: '1.5rem', fontFamily: 'system-ui, sans-serif' }}>

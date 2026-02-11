@@ -16,7 +16,7 @@ function HomePage() {
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {prototypeNames.map((name) => (
             <li key={name} style={{ marginBottom: '0.5rem' }}>
-              <Link to={`prototypes/${name}`} style={{ color: '#0066cc' }}>
+              <Link to={name} style={{ color: '#0066cc' }}>
                 {name}
               </Link>
             </li>

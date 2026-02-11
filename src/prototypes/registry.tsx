@@ -22,7 +22,7 @@ export function getPrototypeRoutes(): RouteObject[] {
     const Layout = mod.default
     const childRoutes = mod.routes ?? [{ path: '/', Component: () => null }]
     list.push({
-      path: `prototypes/${name}`,
+      path: name,
       element: <Layout />,
       children: childRoutes.map((r) => {
         const isIndex = r.path === '/' || r.path === ''

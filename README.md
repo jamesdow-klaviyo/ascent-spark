@@ -14,7 +14,7 @@ Minimal starter: **Vite**, **React**, **TypeScript**. Homepage lists all **proto
    npm install
    npm run dev
    ```
-4. Open [http://localhost:5173](http://localhost:5173). The homepage lists all prototypes; each is a route (e.g. `/prototypes/example`) with optional sub-routes.
+4. Open [http://localhost:5173](http://localhost:5173). The homepage lists all prototypes; each is a route (e.g. `/example`) with optional sub-routes.
 
 Your live site will be at **`https://<your-username>.github.io/<repo-name>/`** (use the trailing slash). Base path and deploys use your repo name from `git remote` — no configuration needed.
 
@@ -41,7 +41,7 @@ Each prototype is a **React route** under **`src/prototypes/`**. Add a folder (e
 - **`default`** – The layout component (use `<Outlet />` for sub-routes and `<Link>` for nav).
 - **`routes`** (optional) – Array of `{ path, Component }` for sub-routes (e.g. `{ path: 'step1', Component: Step1 }`). Use `path: '/'` (or `''`) for the index view.
 
-The homepage list is built from the folder names in `src/prototypes/` at build time. Sub-routes give you in-prototype navigation (e.g. `/prototypes/example/step1`). See `src/prototypes/example/index.tsx` for the pattern.
+The homepage list is built from the folder names in `src/prototypes/` at build time. Sub-routes give you in-prototype navigation (e.g. `/example/step1`). See `src/prototypes/example/index.tsx` for the pattern.
 
 ---
 
