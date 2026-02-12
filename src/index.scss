@@ -52,11 +52,28 @@ body {
   color: inherit;
 }
 
-/* Subtle title glow */
+/* Main title: gradient text + glow (glow via wrapper drop-shadow) */
+.home-title-wrap {
+  display: inline-block;
+  filter: drop-shadow(0 0 24px rgba(239, 99, 81, 0.28)) drop-shadow(0 0 48px rgba(239, 99, 81, 0.12));
+}
+.home-title-gradient {
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f5e6e3 40%,
+    rgba(239, 99, 81, 0.92) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 404 and other titles: solid text + glow */
 .home-title-glow {
   text-shadow:
-    0 0 24px rgba(239, 99, 81, 0.2),
-    0 0 48px rgba(239, 99, 81, 0.08);
+    0 0 24px rgba(239, 99, 81, 0.25),
+    0 0 48px rgba(239, 99, 81, 0.12);
 }
 
 /* Transitions: shared timing */
