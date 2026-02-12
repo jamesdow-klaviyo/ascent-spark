@@ -89,25 +89,29 @@ function CategoryPage() {
   return (
     <main className="home-page-bg min-h-screen text-neutral-100">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-200"
-        >
-          <ChevronRight className="h-4 w-4 rotate-180" />
-          All categories
-        </Link>
         <h1 className="mb-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h1>
         <p className="mb-10 text-neutral-400">
           {projects.length} project{projects.length !== 1 ? 's' : ''} in this category
         </p>
 
         {projects.length === 0 ? (
-          <p className="rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-6 text-neutral-400">
-            No projects in this category yet.
-          </p>
+          <>
+            <p className="rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-6 text-neutral-400">
+              No projects in this category yet.
+            </p>
+            <p className="mt-6">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-200"
+              >
+                <ChevronRight className="h-4 w-4 rotate-180" />
+                All categories
+              </Link>
+            </p>
+          </>
         ) : (
           <>
-            <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
               <input
                 type="search"
                 placeholder="Search projects…"
@@ -155,6 +159,15 @@ function CategoryPage() {
                 </button>
               </div>
             </div>
+            <p className="mb-8">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-200"
+              >
+                <ChevronRight className="h-4 w-4 rotate-180" />
+                All categories
+              </Link>
+            </p>
 
             {filtered.length === 0 ? (
               <p className="text-neutral-500">No projects match your search.</p>
