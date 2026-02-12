@@ -29,11 +29,11 @@ yarn dev:all
 ```
 
 2. The terminal will show both a local address (e.g. `http://localhost:5173`) and a network address—the numbers in the network one depend on your Wi‑Fi, so yours may look different (e.g. `http://192.168.1.5:5173`).
-2. Type the **network** address into the browser on your phone or other device. You’ll see the same prototype.
+3. Type the **network** address into the browser on your phone or other device. You can use this to share your prototype with anyone on the same network.
 
 ---
 
-## 3. Publish it to the web (so anyone with the link can view it)
+## 3. Setup GitHub Pages for external sharing.
 
 **One-time setup in GitHub**
 
@@ -42,15 +42,9 @@ yarn dev:all
 3. Under **Source**, choose **Deploy from a branch**.
 4. **Branch:** choose `gh-pages`. **Folder:** choose **/ (root)**. Click **Save**.
 
-**When you want to update the live site**
+**`yarn dev:all` commits your changes and deploys at the same time.**
 
-1. In the project folder, run:
-
-   ```bash
-   yarn run deploy
-   ```
-
-2. After a minute or so, your live site will update. The link will look like:
+6. After a minute or so, your live site will update. The link will look like:
 
    **`https://your-username.github.io/repo-name/`**
 
