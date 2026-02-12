@@ -114,8 +114,8 @@ function BrowseLayout() {
           <p className="mb-10 text-neutral-400">
             Projects and folders in <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">projects/</code>. Open a folder or a project.
           </p>
-          <Breadcrumb prefix={prefix} />
           <FilterBar />
+          <Breadcrumb prefix={prefix} />
           <Outlet />
         </BrowseFilterContext.Provider>
       </div>
