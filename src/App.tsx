@@ -131,306 +131,178 @@ function BrowseLayout() {
   )
 }
 
-function CategoryPage() {
-  const { category } = useParams<{ category: string }>()
-  const slug = category ?? ''
-  const projects = useMemo(() => getProjectsByCategory(slug), [slug])
-  const [search, setSearch] = useState('')
-  const [sort, setSort] = useState<SortKey>('name-asc')
-  const [viewMode, setViewMode] = useState<ViewMode>('tile')
+type BrowseItem = { type: 'folder'; path: string; name: string } | { type: 'project'; meta: ProjectMeta }
+
+function BrowseContent({ prefix }: { prefix: string }) {
+  const { search, sort, viewMode } = useBrowseFilter()
+  const folders = useMemo(() => getChildFolders(prefix), [prefix])
+  const projects = useMemo(() => getChildProjects(prefix), [prefix])
+  const items: BrowseItem[] = useMemo(() => {
+    const list: BrowseItem[] = folders.map((name) => ({ type: 'folder', path: prefix ? `${prefix}/${name}` : name, name }))
+    list.push(...projects.map((meta) => ({ type: 'project', meta })))
+    const q = search.trim().toLowerCase()
+    const filtered = q
+      ? list.filter((item) => {
+          if (item.type === 'folder') return item.name.toLowerCase().includes(q)
+          return (
+            (item.meta.name ?? '').toLowerCase().includes(q) ||
+            (item.meta.title ?? '').toLowerCase().includes(q) ||
+            (item.meta.description ?? '').toLowerCase().includes(q)
+          )
+        })
+      : list
+    const asc = sort === 'name-asc'
+    filtered.sort((a, b) => {
+      const nameA = a.type === 'folder' ? a.name : a.meta.name ?? ''
+      const nameB = b.type === 'folder' ? b.name : b.meta.name ?? ''
+      const cmp = nameA.localeCompare(nameB, undefined, { sensitivity: 'base' })
+      return asc ? cmp : -cmp
+    })
+    return filtered
+  }, [prefix, folders, projects, search, sort])
+
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
+  const visible = useMemo(() => items.slice(0, visibleCount), [items, visibleCount])
+  const hasMore = visible.length < items.length
   const sentinelRef = useRef<HTMLDivElement>(null)
-
-  const filtered = useMemo(() => filterAndSort(projects, search, sort), [projects, search, sort])
-  const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
-  const hasMore = visible.length < filtered.length
-
-  const loadMore = useCallback(() => {
-    setVisibleCount((n) => Math.min(n + LOAD_MORE, filtered.length))
-  }, [filtered.length])
-
-  useEffect(() => {
-    setVisibleCount(INITIAL_VISIBLE)
-  }, [search, sort])
-
+  const loadMore = useCallback(() => setVisibleCount((n) => Math.min(n + LOAD_MORE, items.length)), [items.length])
+  useEffect(() => setVisibleCount(INITIAL_VISIBLE), [search, sort, prefix])
   useEffect(() => {
     if (!hasMore || !sentinelRef.current) return
-    const el = sentinelRef.current
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) loadMore()
-      },
-      { rootMargin: '200px', threshold: 0 }
-    )
-    obs.observe(el)
+    const obs = new IntersectionObserver((entries) => { if (entries[0]?.isIntersecting) loadMore() }, { rootMargin: '200px', threshold: 0 })
+    obs.observe(sentinelRef.current)
     return () => obs.disconnect()
-  }, [hasMore, loadMore, visible.length])
+  }, [hasMore, loadMore])
 
-  const title = formatCategoryTitle(slug)
-
-  if (!categorySlugs.includes(slug)) {
+  if (items.length === 0) {
     return (
-      <main className="home-page-bg-subtle flex min-h-screen flex-col items-center justify-center px-4 text-center">
-        <p className="mb-6 text-neutral-400">Category not found.</p>
-        <Link to="/" className="text-[var(--klaviyo-burnt-sienna)] hover:underline">
-          ← Back to dashboard
-        </Link>
-      </main>
+      <p className="rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-6 text-neutral-400">
+        {prefix ? 'Nothing in this folder.' : 'No projects yet. Add a folder under projects/ with an index.tsx.'}
+      </p>
     )
   }
 
-  return (
-    <main className="home-page-bg min-h-screen text-neutral-100">
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h1>
-        <p className="mb-10 text-neutral-400">
-          {projects.length} project{projects.length !== 1 ? 's' : ''} in this category
-        </p>
-
-        {projects.length === 0 ? (
-          <>
-            <p className="rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-6 text-neutral-400">
-              No projects in this category yet.
-            </p>
-            <p className="mt-6">
+  const listContent = (
+    <ul className={viewMode === 'list' ? 'flex flex-col gap-2' : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'}>
+      {visible.map((item) => {
+        if (item.type === 'folder') {
+          return (
+            <li key={`folder-${item.path}`}>
               <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-200"
+                to={prefix ? `/${item.path}` : `/${item.path}`}
+                className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
               >
-                <ChevronRight className="h-4 w-4 rotate-180" />
-                All categories
+                <div className="flex aspect-video w-full items-center justify-center bg-white/[0.06] transition-colors group-hover:bg-white/[0.08]">
+                  <FolderOpen className="h-14 w-14 text-neutral-500 group-hover:text-[var(--klaviyo-burnt-sienna)]/80" strokeWidth={1.5} />
+                </div>
+                <div className="flex flex-1 flex-col p-4 text-left">
+                  <span className="font-semibold text-white">{formatSegmentTitle(item.name)}</span>
+                </div>
               </Link>
-            </p>
-          </>
-        ) : (
-          <>
-            <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
-              <input
-                type="search"
-                placeholder="Search projects…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="home-input-glow h-10 flex-1 min-w-[200px] rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 placeholder-neutral-500 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
-                aria-label="Search projects"
-              />
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortKey)}
-                className="home-select h-10 rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
-                aria-label="Sort by project name"
-              >
-                <option value="name-asc">Name (A–Z)</option>
-                <option value="name-desc">Name (Z–A)</option>
-              </select>
-              <div className="home-view-toggle-wrap relative flex rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-0.5">
-                <span
-                  className="home-view-toggle-pill absolute left-0.5 top-0.5 bottom-0.5 w-[calc(50%-4px)] rounded-md bg-[var(--klaviyo-burnt-sienna)]"
-                  style={{ marginLeft: viewMode === 'tile' ? 'calc(50% + 2px)' : '0' }}
-                  aria-hidden
-                />
-                <button
-                  type="button"
-                  onClick={() => setViewMode('list')}
-                  className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
-                  data-active={viewMode === 'list' || undefined}
-                  aria-label="List view"
-                  aria-pressed={viewMode === 'list'}
-                >
-                  <List className="h-4 w-4 shrink-0" strokeWidth={2} />
-                  <span className="sr-only sm:not-sr-only sm:inline">List</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('tile')}
-                  className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
-                  data-active={viewMode === 'tile' || undefined}
-                  aria-label="Tile view"
-                  aria-pressed={viewMode === 'tile'}
-                >
-                  <LayoutGrid className="h-4 w-4 shrink-0" strokeWidth={2} />
-                  <span className="sr-only sm:not-sr-only sm:inline">Tile</span>
-                </button>
+            </li>
+          )
+        }
+        const { path, name, title: projectTitle, description, preview } = item.meta
+        const linkClass = 'home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]'
+        if (viewMode === 'list') {
+          return (
+            <li key={path}>
+              <Link to={`/${path}`} className={linkClass + ' flex items-stretch gap-0 overflow-hidden'}>
+                {preview != null ? (
+                  <span className="flex min-h-full w-24 shrink-0 sm:basis-40">
+                    <img src={preview} alt="" className="h-full min-h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
+                  </span>
+                ) : (
+                  <div className="min-h-full w-24 shrink-0 bg-white/[0.06] sm:w-40" aria-hidden />
+                )}
+                <div className="min-w-0 flex-1 p-4 text-left">
+                  <span className="block font-semibold text-white">{projectTitle ?? name}</span>
+                  {description != null && <p className="mt-0.5 truncate text-sm text-neutral-400">{description}</p>}
+                </div>
+              </Link>
+            </li>
+          )
+        }
+        return (
+          <li key={path}>
+            <Link to={`/${path}`} className={linkClass}>
+              {preview != null ? (
+                <img src={preview} alt="" className="aspect-video w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
+              ) : (
+                <div className="aspect-video w-full bg-white/[0.06]" aria-hidden />
+              )}
+              <div className="flex flex-1 flex-col p-4 text-left">
+                <span className="font-semibold text-white">{projectTitle ?? name}</span>
+                {description != null && <p className="mt-1 line-clamp-2 text-sm text-neutral-400">{description}</p>}
               </div>
-            </div>
-            <p className="mb-8">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-sm text-neutral-400 hover:text-neutral-200"
-              >
-                <ChevronRight className="h-4 w-4 rotate-180" />
-                All categories
-              </Link>
-            </p>
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
+  )
 
-            {filtered.length === 0 ? (
-              <p className="text-neutral-500">No projects match your search.</p>
-            ) : viewMode === 'list' ? (
-              <ul className="flex flex-col gap-2">
-                {visible.map(({ path, name, title: projectTitle, description, preview }) => (
-                  <li key={path}>
-                    <Link
-                      to={`/${path}`}
-                      className="home-card-glow group flex items-stretch gap-0 rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] overflow-hidden hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
-                    >
-                      {preview != null ? (
-                        <span className="flex min-h-full w-24 shrink-0 sm:basis-40">
-                          <img
-                            src={preview}
-                            alt=""
-                            className="h-full min-h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-                          />
-                        </span>
-                      ) : (
-                        <div className="min-h-full w-24 shrink-0 bg-white/[0.06] sm:w-40" aria-hidden />
-                      )}
-                      <div className="min-w-0 flex-1 p-4 text-left">
-                        <span className="block font-semibold text-white">
-                          {projectTitle ?? name}
-                        </span>
-                        {description != null && (
-                          <p className="mt-0.5 truncate text-sm text-neutral-400">
-                            {description}
-                          </p>
-                        )}
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {visible.map(({ path, name, title: projectTitle, description, preview }) => (
-                  <li key={path}>
-                    <Link
-                      to={`/${path}`}
-                      className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
-                    >
-                      {preview != null ? (
-                        <img
-                          src={preview}
-                          alt=""
-                          className="aspect-video w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-                        />
-                      ) : (
-                        <div className="aspect-video w-full bg-white/[0.06]" aria-hidden />
-                      )}
-                      <div className="flex flex-1 flex-col p-4 text-left">
-                        <span className="font-semibold text-white">
-                          {projectTitle ?? name}
-                        </span>
-                        {description != null && (
-                          <p className="mt-1 line-clamp-2 text-sm text-neutral-400">
-                            {description}
-                          </p>
-                        )}
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <div ref={sentinelRef} className="h-4" aria-hidden />
-          </>
-        )}
-      </div>
-    </main>
+  return (
+    <>
+      {listContent}
+      <div ref={sentinelRef} className="h-4" aria-hidden />
+    </>
   )
 }
 
-function CategoryOrSegmentPage() {
-  const { category } = useParams<{ category: string }>()
-  const slug = category ?? ''
-  if (categorySlugs.includes(slug)) {
-    return <CategoryPage />
-  }
+function Breadcrumb({ prefix }: { prefix: string }) {
+  const breadcrumb = useMemo(() => getBreadcrumb(prefix), [prefix])
+  if (breadcrumb.length <= 1) return null
   return (
-    <main className="home-page-bg-subtle flex min-h-screen flex-col items-center justify-center px-4 text-center">
-      <h1 className="home-title-glow mb-4 text-6xl font-bold text-white sm:text-8xl">404</h1>
-      <p className="mb-6 text-neutral-400">Page not found.</p>
-      <Link
-        to="/"
-        className="home-back-link rounded-lg bg-[var(--klaviyo-burnt-sienna)] px-4 py-2 font-medium text-white hover:opacity-90"
-      >
-        Back to home
-      </Link>
-    </main>
+    <nav className="mb-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-neutral-400" aria-label="Breadcrumb">
+      {breadcrumb.map((item, i) => (
+        <span key={item.path} className="flex items-center gap-1.5">
+          {i > 0 && <ChevronRight className="h-4 w-4 rotate-180" />}
+          {i === breadcrumb.length - 1 ? (
+            <span className="text-white">{item.title}</span>
+          ) : (
+            <Link to={item.path === '' ? '/' : `/${item.path}`} className="hover:text-neutral-200">
+              {item.title}
+            </Link>
+          )}
+        </span>
+      ))}
+    </nav>
   )
 }
 
 function HomePage() {
-  const [search, setSearch] = useState('')
-  const filteredCategories = useMemo(() => {
-    const q = search.trim().toLowerCase()
-    if (!q) return categorySlugs
-    return categorySlugs.filter((slug) => {
-      const title = formatCategoryTitle(slug)
-      const count = getProjectsByCategory(slug).length
-      return title.toLowerCase().includes(q) || (count > 0 && String(count).includes(q))
-    })
-  }, [search])
-
   return (
-    <main className="home-page-bg min-h-screen text-neutral-100">
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
-        <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-          <span className="home-title-wrap">
-            <span className="home-title-gradient">Ascent Spark</span>
-          </span>
-        </h1>
-        <p className="mb-10 text-neutral-400">
-          Projects live in <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">projects/</code>. Add a folder to group them, or put <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">index.tsx</code> inside a subfolder.
-        </p>
+    <>
+      <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+        <span className="home-title-wrap">
+          <span className="home-title-gradient">Ascent Spark</span>
+        </span>
+      </h1>
+      <p className="mb-10 text-neutral-400">
+        Projects and folders in <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">projects/</code>. Open a folder or a project.
+      </p>
+      <BrowseContent prefix="" />
+    </>
+  )
+}
 
-        {categorySlugs.length === 0 ? (
-          <p className="rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-6 text-neutral-400">
-            No projects yet. Add <code className="font-mono">projects/my-name/index.tsx</code> or <code className="font-mono">projects/category/my-name/index.tsx</code> (export default + optional <code className="font-mono">routes</code>).
-          </p>
-        ) : (
-          <>
-            <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
-              <input
-                type="search"
-                placeholder="Search categories…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="home-input-glow h-10 flex-1 min-w-[200px] rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 placeholder-neutral-500 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
-                aria-label="Search categories"
-              />
-            </div>
-
-            {filteredCategories.length === 0 ? (
-              <p className="text-neutral-500">No categories match your search.</p>
-            ) : (
-              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredCategories.map((slug) => {
-                  const title = formatCategoryTitle(slug)
-                  const count = getProjectsByCategory(slug).length
-                  return (
-                    <li key={slug}>
-                      <Link
-                        to={`/${slug}`}
-                        className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
-                      >
-                        <div className="flex aspect-video w-full items-center justify-center bg-white/[0.06] transition-colors group-hover:bg-white/[0.08]">
-                          <FolderOpen className="h-14 w-14 text-neutral-500 group-hover:text-[var(--klaviyo-burnt-sienna)]/80" strokeWidth={1.5} />
-                        </div>
-                        <div className="flex flex-1 flex-col p-4 text-left">
-                          <span className="font-semibold text-white">{title}</span>
-                          <p className="mt-1 text-sm text-neutral-400">
-                            {count} project{count !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
-          </>
-        )}
+function FolderPage() {
+  const params = useParams()
+  const path = (params['*'] ?? '').trim()
+  if (!path || !isFolderPrefix(path)) {
+    return (
+      <div className="text-center">
+        <p className="mb-6 text-neutral-400">Not found.</p>
+        <Link to="/" className="text-[var(--klaviyo-burnt-sienna)] hover:underline">← All</Link>
       </div>
-    </main>
+    )
+  }
+  return (
+    <>
+      <Breadcrumb prefix={path} />
+      <BrowseContent prefix={path} />
+    </>
   )
 }
 
@@ -453,9 +325,15 @@ function NotFoundPage() {
 
 const router = createBrowserRouter(
   [
-    { path: '/', element: <HomePage /> },
+    {
+      path: '/',
+      element: <BrowseLayout />,
+      children: [
+        { index: true, element: <HomePage /> },
+        { path: '*', element: <FolderPage /> },
+      ],
+    },
     ...getProjectRoutes(),
-    { path: ':category', element: <CategoryOrSegmentPage /> },
     { path: '*', element: <NotFoundPage /> },
   ],
   { basename: base.replace(/\/$/, '') || '/' }
