@@ -3,12 +3,9 @@ import { useMemo, useState, useRef, useEffect, useCallback } from 'react'
 import { List, LayoutGrid, FolderOpen, ChevronRight } from 'lucide-react'
 import {
   getProjectRoutes,
-  projectMeta,
   categorySlugs,
   getProjectsByCategory,
   formatCategoryTitle,
-  UNCATEGORIZED_SLUG,
-  type ProjectMeta,
 } from './registry'
 
 const base = import.meta.env.BASE_URL
@@ -351,6 +348,7 @@ const router = createBrowserRouter(
   [
     { path: '/', element: <HomePage /> },
     ...getProjectRoutes(),
+    { path: ':category', element: <CategoryOrSegmentPage /> },
     { path: '*', element: <NotFoundPage /> },
   ],
   { basename: base.replace(/\/$/, '') || '/' }
