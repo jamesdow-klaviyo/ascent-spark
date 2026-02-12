@@ -187,7 +187,7 @@ function HomePage() {
                       ) : (
                         <div className="aspect-video w-full bg-white/[0.06]" aria-hidden />
                       )}
-                      <div className="flex flex-1 flex-col p-4">
+                      <div className="flex flex-1 flex-col p-4 text-left">
                         <span className="font-semibold text-white">
                           {title ?? name}
                         </span>
