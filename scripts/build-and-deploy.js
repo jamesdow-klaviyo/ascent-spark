@@ -8,6 +8,7 @@
  * Run: npm run deploy
  */
 
+import { copyFileSync } from 'fs';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,6 +26,12 @@ const basePath = `/${repoName}/`;
 
 console.log(`[deploy] Building with base: ${basePath}`);
 run(`npm run build`, { env: { ...process.env, BASE_PATH: basePath } });
+
+// GitHub Pages has no SPA fallback: missing paths return 404. Serving our app as
+// 404.html means any direct link (e.g. /repo/todo/step1) still loads the SPA
+// and React Router can handle the URL.
+copyFileSync(path.join(ROOT, 'dist', 'index.html'), path.join(ROOT, 'dist', '404.html'));
+console.log('[deploy] Copied index.html → 404.html for client-side route support.');
 
 console.log('[deploy] Pushing dist to gh-pages branch...');
 run(`npx gh-pages -d dist`);
