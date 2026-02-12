@@ -216,7 +216,7 @@ function HomePage() {
 
 function NotFoundPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[var(--klaviyo-bg)] px-4 text-center">
+    <main className="home-page-bg-subtle flex min-h-screen flex-col items-center justify-center px-4 text-center">
       <h1 className="home-title-glow mb-4 text-6xl font-bold text-white sm:text-8xl">
         404
       </h1>

@@ -17,9 +17,14 @@ body {
   --klaviyo-bg-elevated: #141414;
 }
 
-.home-page-bg {
+.home-page-bg,
+.home-page-bg-subtle {
   background: #0c0c0c;
-  background-image: linear-gradient(180deg, #0c0c0c 0%, #0f0f0f 50%, #0c0c0c 100%);
+  background-image: linear-gradient(to bottom, #0c0c0c, #0d0d0d);
+}
+
+.home-page-bg a {
+  color: inherit;
 }
 
 .home-title-glow {
