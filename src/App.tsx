@@ -1,5 +1,6 @@
 import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom'
 import { useMemo, useState, useRef, useEffect, useCallback } from 'react'
+import { List, LayoutGrid } from 'lucide-react'
 import { getProjectRoutes, projectMeta, type ProjectMeta } from './registry'
 
 const base = import.meta.env.BASE_URL
@@ -113,32 +114,33 @@ function HomePage() {
                 <option value="name-asc">Folder name (A–Z)</option>
                 <option value="name-desc">Folder name (Z–A)</option>
               </select>
-              <div className="flex rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-0.5">
+              <div className="home-view-toggle-wrap relative flex rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-0.5">
+                <span
+                  className="home-view-toggle-pill absolute top-0.5 bottom-0.5 w-[calc(50%-4px)] rounded-md bg-[var(--klaviyo-burnt-sienna)] transition-transform duration-250 ease-out"
+                  style={{ transform: viewMode === 'tile' ? 'translateX(calc(100% + 4px))' : 'translateX(0)' }}
+                  aria-hidden
+                />
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
-                  className={`home-view-toggle rounded-md px-3 py-1.5 text-sm font-medium ${
-                    viewMode === 'list'
-                      ? 'bg-[var(--klaviyo-burnt-sienna)] text-white'
-                      : 'text-neutral-400 hover:text-neutral-200'
-                  }`}
+                  className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
+                  data-active={viewMode === 'list' || undefined}
                   aria-label="List view"
                   aria-pressed={viewMode === 'list'}
                 >
-                  List
+                  <List className="h-4 w-4 shrink-0" strokeWidth={2} />
+                  <span className="sr-only sm:not-sr-only sm:inline">List</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('tile')}
-                  className={`home-view-toggle rounded-md px-3 py-1.5 text-sm font-medium ${
-                    viewMode === 'tile'
-                      ? 'bg-[var(--klaviyo-burnt-sienna)] text-white'
-                      : 'text-neutral-400 hover:text-neutral-200'
-                  }`}
+                  className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
+                  data-active={viewMode === 'tile' || undefined}
                   aria-label="Tile view"
                   aria-pressed={viewMode === 'tile'}
                 >
-                  Tile
+                  <LayoutGrid className="h-4 w-4 shrink-0" strokeWidth={2} />
+                  <span className="sr-only sm:not-sr-only sm:inline">Tile</span>
                 </button>
               </div>
             </div>
