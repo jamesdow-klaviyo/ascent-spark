@@ -107,9 +107,15 @@ body {
   box-shadow: 0 0 0 1px var(--klaviyo-burnt-sienna), 0 0 16px rgba(239, 99, 81, 0.08);
 }
 
-/* View toggle buttons */
-.home-view-toggle {
-  transition: color 0.2s ease, background-color 0.2s ease;
+/* View toggle: sliding pill + icons */
+.home-view-toggle-wrap {
+  min-width: 7rem;
+}
+.home-view-toggle-pill {
+  transition: margin-left 0.22s ease-out;
+}
+.home-view-toggle-wrap button[data-active] {
+  color: white;
 }
 
 /* 404 back link */

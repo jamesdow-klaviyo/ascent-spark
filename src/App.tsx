@@ -116,8 +116,8 @@ function HomePage() {
               </select>
               <div className="home-view-toggle-wrap relative flex rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-0.5">
                 <span
-                  className="home-view-toggle-pill absolute top-0.5 bottom-0.5 w-[calc(50%-4px)] rounded-md bg-[var(--klaviyo-burnt-sienna)] transition-transform duration-250 ease-out"
-                  style={{ transform: viewMode === 'tile' ? 'translateX(calc(100% + 4px))' : 'translateX(0)' }}
+                  className="home-view-toggle-pill absolute left-0.5 top-0.5 bottom-0.5 w-[calc(50%-4px)] rounded-md bg-[var(--klaviyo-burnt-sienna)]"
+                  style={{ marginLeft: viewMode === 'tile' ? 'calc(50% + 2px)' : '0' }}
                   aria-hidden
                 />
                 <button
