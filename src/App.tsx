@@ -251,7 +251,7 @@ function Breadcrumb({ prefix }: { prefix: string }) {
   const breadcrumb = useMemo(() => getBreadcrumb(prefix), [prefix])
   if (breadcrumb.length <= 1) return null
   return (
-    <nav className="mb-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-neutral-400" aria-label="Breadcrumb">
+    <nav className="mb-6 flex flex-wrap items-center justify-start gap-1.5 text-sm text-neutral-400" aria-label="Breadcrumb">
       {breadcrumb.map((item, i) => (
         <span key={item.path} className="flex items-center gap-1.5">
           {i > 0 && <ChevronRight className="h-4 w-4 rotate-180 shrink-0" aria-hidden />}
