@@ -1,6 +1,6 @@
 import { createBrowserRouter, Link, RouterProvider, useParams, Outlet, useLocation } from 'react-router-dom'
 import { useMemo, useState, useRef, useEffect, useCallback, createContext, useContext } from 'react'
-import { List, LayoutGrid, FolderOpen, ChevronRight, ChevronDown } from 'lucide-react'
+import { List, LayoutGrid, FolderOpen, ChevronRight, ChevronDown, Home } from 'lucide-react'
 import {
   getProjectRoutes,
   getChildProjects,
@@ -252,10 +252,16 @@ function Breadcrumb({ prefix }: { prefix: string }) {
         <span key={item.path} className="flex items-center gap-1.5">
           {i > 0 && <ChevronRight className="h-4 w-4 rotate-180 shrink-0" aria-hidden />}
           {i === breadcrumb.length - 1 ? (
-            <span className="text-white">{item.title}</span>
+            item.path === '' ? (
+              <span className="inline-flex text-white" aria-label="Home">
+                <Home className="h-4 w-4 shrink-0" strokeWidth={2} />
+              </span>
+            ) : (
+              <span className="text-white">{item.title}</span>
+            )
           ) : (
-            <Link to={item.path === '' ? '/' : `/${item.path}`} className="hover:text-neutral-200">
-              {item.title}
+            <Link to={item.path === '' ? '/' : `/${item.path}`} className="hover:text-neutral-200 inline-flex items-center" aria-label={item.path === '' ? 'Home' : undefined}>
+              {item.path === '' ? <Home className="h-4 w-4 shrink-0" strokeWidth={2} /> : item.title}
             </Link>
           )}
         </span>
