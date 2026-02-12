@@ -204,8 +204,8 @@ function BrowseContent({ prefix }: { prefix: string }) {
             <li key={path} className="relative overflow-hidden rounded-xl">
               <Link to={`/${path}`} className={linkClass + ' flex items-stretch gap-0 overflow-hidden'}>
                 {preview != null ? (
-                  <span className="flex min-h-full w-24 shrink-0 overflow-hidden sm:basis-40 bg-white/[0.06]">
-                    <img src={preview} alt="" className="h-full min-h-full w-full object-cover object-left transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
+                  <span className="flex min-h-full w-24 shrink-0 items-stretch justify-start overflow-hidden bg-white/[0.06] sm:w-40">
+                    <img src={preview} alt="" className="block h-full min-h-full w-full flex-shrink-0 object-cover object-left transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
                   </span>
                 ) : (
                   <div className="min-h-full w-24 shrink-0 overflow-hidden bg-white/[0.06] sm:w-40" aria-hidden />
