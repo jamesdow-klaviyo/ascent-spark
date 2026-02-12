@@ -1,11 +1,13 @@
-import { createBrowserRouter, Link, RouterProvider, useParams } from 'react-router-dom'
-import { useMemo, useState, useRef, useEffect, useCallback } from 'react'
+import { createBrowserRouter, Link, RouterProvider, useParams, Outlet } from 'react-router-dom'
+import { useMemo, useState, useRef, useEffect, useCallback, createContext, useContext } from 'react'
 import { List, LayoutGrid, FolderOpen, ChevronRight } from 'lucide-react'
 import {
   getProjectRoutes,
-  categorySlugs,
-  getProjectsByCategory,
-  formatCategoryTitle,
+  getChildProjects,
+  getChildFolders,
+  getBreadcrumb,
+  formatSegmentTitle,
+  isFolderPrefix,
   type ProjectMeta,
 } from './registry'
 
@@ -15,6 +17,23 @@ const LOAD_MORE = 12
 
 type SortKey = 'name-asc' | 'name-desc'
 type ViewMode = 'list' | 'tile'
+
+type BrowseFilterContext = {
+  search: string
+  setSearch: (s: string) => void
+  sort: SortKey
+  setSort: (s: SortKey) => void
+  viewMode: ViewMode
+  setViewMode: (v: ViewMode) => void
+}
+
+const BrowseFilterContext = createContext<BrowseFilterContext | null>(null)
+
+function useBrowseFilter(): BrowseFilterContext {
+  const ctx = useContext(BrowseFilterContext)
+  if (!ctx) throw new Error('useBrowseFilter must be used inside BrowseLayout')
+  return ctx
+}
 
 function filterAndSort(
   list: ProjectMeta[],
@@ -36,6 +55,80 @@ function filterAndSort(
     return asc ? cmp : -cmp
   })
   return out
+}
+
+function FilterBar() {
+  const { search, setSearch, sort, setSort, viewMode, setViewMode } = useBrowseFilter()
+  return (
+    <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
+      <input
+        type="search"
+        placeholder="Search…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="home-input-glow h-10 flex-1 min-w-[200px] rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 placeholder-neutral-500 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
+        aria-label="Search"
+      />
+      <select
+        value={sort}
+        onChange={(e) => setSort(e.target.value as SortKey)}
+        className="home-select h-10 rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
+        aria-label="Sort by name"
+      >
+        <option value="name-asc">Name (A–Z)</option>
+        <option value="name-desc">Name (Z–A)</option>
+      </select>
+      <div className="home-view-toggle-wrap relative flex rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-0.5">
+        <span
+          className="home-view-toggle-pill absolute left-0.5 top-0.5 bottom-0.5 w-[calc(50%-4px)] rounded-md bg-[var(--klaviyo-burnt-sienna)]"
+          style={{ marginLeft: viewMode === 'tile' ? 'calc(50% + 2px)' : '0' }}
+          aria-hidden
+        />
+        <button
+          type="button"
+          onClick={() => setViewMode('list')}
+          className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
+          data-active={viewMode === 'list' || undefined}
+          aria-label="List view"
+          aria-pressed={viewMode === 'list'}
+        >
+          <List className="h-4 w-4 shrink-0" strokeWidth={2} />
+          <span className="sr-only sm:not-sr-only sm:inline">List</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('tile')}
+          className="relative z-10 flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-400 transition-colors hover:text-neutral-200 data-[active]:text-white"
+          data-active={viewMode === 'tile' || undefined}
+          aria-label="Tile view"
+          aria-pressed={viewMode === 'tile'}
+        >
+          <LayoutGrid className="h-4 w-4 shrink-0" strokeWidth={2} />
+          <span className="sr-only sm:not-sr-only sm:inline">Tile</span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function BrowseLayout() {
+  const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<SortKey>('name-asc')
+  const [viewMode, setViewMode] = useState<ViewMode>('tile')
+  const value = useMemo(
+    () => ({ search, setSearch, sort, setSort, viewMode, setViewMode }),
+    [search, sort, viewMode]
+  )
+  return (
+    <main className="home-page-bg min-h-screen text-neutral-100">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
+        <BrowseFilterContext.Provider value={value}>
+          <FilterBar />
+          <Outlet />
+        </BrowseFilterContext.Provider>
+      </div>
+    </main>
+  )
 }
 
 function CategoryPage() {
