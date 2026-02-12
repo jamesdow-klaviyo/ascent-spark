@@ -23,8 +23,15 @@ export type TodoItem = {
   completed: boolean;
 };
 
+const BUDDY_ELF_INITIAL_TODOS: TodoItem[] = [
+  { id: "buddy-1", title: "Make snow angels for two hours", completed: false },
+  { id: "buddy-2", title: "Go ice skating", completed: false },
+  { id: "buddy-3", title: "Eat a whole roll of Tollhouse cookie dough as fast as we can", completed: false },
+  { id: "buddy-4", title: "Snuggle", completed: false },
+];
+
 function TodoList() {
-  const [items, setItems] = useState<TodoItem[]>([]);
+  const [items, setItems] = useState<TodoItem[]>(BUDDY_ELF_INITIAL_TODOS);
   const [newTitle, setNewTitle] = useState("");
 
   const addTodo = () => {
