@@ -174,20 +174,21 @@ function BrowseContent({ prefix }: { prefix: string }) {
     )
   }
 
+  const tileThumbHeight = 'h-36'
   const listContent = (
     <ul className={viewMode === 'list' ? 'flex flex-col gap-2' : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'}>
       {visible.map((item) => {
         if (item.type === 'folder') {
           return (
-            <li key={`folder-${item.path}`} className={viewMode === 'tile' ? 'flex min-h-0' : undefined}>
+            <li key={`folder-${item.path}`} className={viewMode === 'tile' ? 'flex' : undefined}>
               <Link
                 to={prefix ? `/${item.path}` : `/${item.path}`}
-                className="home-card-glow group flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                className="home-card-glow group flex h-full w-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
               >
-                <div className="flex aspect-video w-full shrink-0 items-center justify-center overflow-hidden bg-white/[0.06] transition-colors group-hover:bg-white/[0.08]">
+                <div className={`flex w-full shrink-0 items-center justify-center overflow-hidden bg-white/[0.06] transition-colors group-hover:bg-white/[0.08] ${viewMode === 'tile' ? tileThumbHeight : 'min-h-[6rem]'}`}>
                   <FolderOpen className="h-14 w-14 shrink-0 text-neutral-500 group-hover:text-[var(--klaviyo-burnt-sienna)]/80" strokeWidth={1.5} />
                 </div>
-                <div className="flex min-h-[4rem] flex-1 flex-col justify-center p-4 text-left">
+                <div className="flex h-16 shrink-0 flex-col justify-center overflow-hidden p-4 text-left">
                   <span className="truncate font-semibold text-white">{formatSegmentTitle(item.name)}</span>
                 </div>
               </Link>
@@ -195,7 +196,7 @@ function BrowseContent({ prefix }: { prefix: string }) {
           )
         }
         const { path, name, title: projectTitle, description, preview } = item.meta
-        const linkClass = 'home-card-glow group flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]'
+        const linkClass = 'home-card-glow group flex h-full w-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]'
         if (viewMode === 'list') {
           return (
             <li key={path}>
@@ -216,16 +217,16 @@ function BrowseContent({ prefix }: { prefix: string }) {
           )
         }
         return (
-          <li key={path} className={viewMode === 'tile' ? 'flex min-h-0' : undefined}>
-            <Link to={`/${path}`} className={linkClass + (viewMode === 'tile' ? ' w-full' : '')}>
+          <li key={path} className={viewMode === 'tile' ? 'flex' : undefined}>
+            <Link to={`/${path}`} className={linkClass}>
               {preview != null ? (
-                <div className="aspect-video w-full shrink-0 overflow-hidden bg-white/[0.06]">
+                <div className={`w-full shrink-0 overflow-hidden bg-white/[0.06] ${tileThumbHeight}`}>
                   <img src={preview} alt="" className="h-full w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
                 </div>
               ) : (
-                <div className="aspect-video w-full shrink-0 bg-white/[0.06]" aria-hidden />
+                <div className={`w-full shrink-0 bg-white/[0.06] ${tileThumbHeight}`} aria-hidden />
               )}
-              <div className="flex min-h-[4rem] flex-1 flex-col justify-center overflow-hidden p-4 text-left">
+              <div className="flex h-16 shrink-0 flex-col justify-center overflow-hidden p-4 text-left">
                 <span className="truncate font-semibold text-white">{projectTitle ?? name}</span>
               </div>
             </Link>
