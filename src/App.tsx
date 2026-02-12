@@ -75,7 +75,7 @@ function HomePage() {
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
         <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
           <span className="home-title-wrap">
-            <span className="home-title-gradient">PROJECTS</span>
+            <span className="home-title-gradient">Ascent Spark</span>
           </span>
         </h1>
         <p className="mb-10 text-neutral-400">
