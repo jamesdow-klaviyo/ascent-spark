@@ -165,23 +165,23 @@ function BrowseContent({ prefix }: { prefix: string }) {
       {visible.map((item) => {
         if (item.type === 'folder') {
           return (
-            <li key={`folder-${item.path}`}>
+            <li key={`folder-${item.path}`} className={viewMode === 'tile' ? 'flex' : undefined}>
               <Link
                 to={prefix ? `/${item.path}` : `/${item.path}`}
-                className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                className="home-card-glow group flex h-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
               >
-                <div className="flex aspect-video w-full items-center justify-center bg-white/[0.06] transition-colors group-hover:bg-white/[0.08]">
+                <div className="flex aspect-video w-full shrink-0 items-center justify-center bg-white/[0.06] transition-colors group-hover:bg-white/[0.08]">
                   <FolderOpen className="h-14 w-14 text-neutral-500 group-hover:text-[var(--klaviyo-burnt-sienna)]/80" strokeWidth={1.5} />
                 </div>
-                <div className="flex flex-1 flex-col p-4 text-left">
-                  <span className="font-semibold text-white">{formatSegmentTitle(item.name)}</span>
+                <div className="flex min-h-[4rem] flex-1 flex-col justify-center p-4 text-left">
+                  <span className="truncate font-semibold text-white">{formatSegmentTitle(item.name)}</span>
                 </div>
               </Link>
             </li>
           )
         }
         const { path, name, title: projectTitle, description, preview } = item.meta
-        const linkClass = 'home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]'
+        const linkClass = 'home-card-glow group flex h-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]'
         if (viewMode === 'list') {
           return (
             <li key={path}>
@@ -202,16 +202,15 @@ function BrowseContent({ prefix }: { prefix: string }) {
           )
         }
         return (
-          <li key={path}>
-            <Link to={`/${path}`} className={linkClass}>
+          <li key={path} className={viewMode === 'tile' ? 'flex' : undefined}>
+            <Link to={`/${path}`} className={linkClass + (viewMode === 'tile' ? ' w-full' : '')}>
               {preview != null ? (
-                <img src={preview} alt="" className="aspect-video w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
+                <img src={preview} alt="" className="aspect-video w-full shrink-0 object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
               ) : (
-                <div className="aspect-video w-full bg-white/[0.06]" aria-hidden />
+                <div className="aspect-video w-full shrink-0 bg-white/[0.06]" aria-hidden />
               )}
-              <div className="flex flex-1 flex-col p-4 text-left">
-                <span className="font-semibold text-white">{projectTitle ?? name}</span>
-                {description != null && <p className="mt-1 line-clamp-2 text-sm text-neutral-400">{description}</p>}
+              <div className="flex min-h-[4rem] flex-1 flex-col justify-center p-4 text-left">
+                <span className="truncate font-semibold text-white">{projectTitle ?? name}</span>
               </div>
             </Link>
           </li>
