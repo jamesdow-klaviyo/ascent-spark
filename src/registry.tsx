@@ -42,15 +42,6 @@ const parsedProjects = Object.keys(modules)
 
 export const projectNames: string[] = parsedProjects.map((p) => p.path)
 
-/** Unique category slugs for the dashboard. Includes UNCATEGORIZED_SLUG for top-level projects. */
-export const categorySlugs: string[] = (() => {
-  const cats = new Set<string>()
-  for (const p of parsedProjects) {
-    cats.add(p.category ?? UNCATEGORIZED_SLUG)
-  }
-  return [...cats].sort((a, b) => (a === UNCATEGORIZED_SLUG ? 1 : b === UNCATEGORIZED_SLUG ? -1 : a.localeCompare(b)))
-})()
-
 function getPreviewUrl(path: string): string | undefined {
   const key = Object.keys(previewGlob).find(
     (k) => k.replace('../projects/', '').replace(/\/preview\.(png|jpg|jpeg|webp)$/, '') === path
@@ -84,21 +75,62 @@ export const projectMeta: ProjectMeta[] = parsedProjects.map((p) => {
   }
 })
 
-export function getProjectsByCategory(categorySlug: string): ProjectMeta[] {
-  return projectMeta.filter((p) => p.categorySlug === categorySlug)
+/** Direct child projects at this path prefix (e.g. "" for root, "design-system" for one level down). */
+export function getChildProjects(prefix: string): ProjectMeta[] {
+  if (prefix === '') {
+    return projectMeta.filter((p) => !p.path.includes('/'))
+  }
+  const prefixSlash = prefix + '/'
+  return projectMeta.filter((p) => {
+    if (!p.path.startsWith(prefixSlash)) return false
+    const rest = p.path.slice(prefixSlash.length)
+    return !rest.includes('/')
+  })
 }
 
-export function formatCategoryTitle(slug: string): string {
-  if (slug === UNCATEGORIZED_SLUG) return 'Examples'
-  return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+/** Direct child folder names at this path prefix (folders that contain projects or more folders). */
+export function getChildFolders(prefix: string): string[] {
+  const folders = new Set<string>()
+  for (const p of projectMeta) {
+    if (prefix === '') {
+      if (p.path.includes('/')) folders.add(p.path.split('/')[0])
+    } else {
+      const prefixSlash = prefix + '/'
+      if (!p.path.startsWith(prefixSlash)) continue
+      const rest = p.path.slice(prefixSlash.length)
+      const idx = rest.indexOf('/')
+      if (idx !== -1) folders.add(rest.slice(0, idx))
+    }
+  }
+  return [...folders].sort((a, b) => a.localeCompare(b))
 }
 
-export function isCategorySlug(slug: string): boolean {
-  return categorySlugs.includes(slug) && slug !== UNCATEGORIZED_SLUG
+/** Breadcrumb items for a path prefix. path "" = root. */
+export function getBreadcrumb(prefix: string): { path: string; title: string }[] {
+  if (prefix === '') return [{ path: '', title: 'All' }]
+  const parts = prefix.split('/')
+  const out: { path: string; title: string }[] = [{ path: '', title: 'All' }]
+  let acc = ''
+  for (const part of parts) {
+    acc = acc ? `${acc}/${part}` : part
+    out.push({ path: acc, title: formatSegmentTitle(part) })
+  }
+  return out
+}
+
+export function formatSegmentTitle(segment: string): string {
+  return segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export function getProjectByPath(path: string): ProjectMeta | undefined {
   return projectMeta.find((p) => p.path === path)
+}
+
+/** True if this path is a known folder prefix (has children). */
+export function isFolderPrefix(path: string): boolean {
+  if (path === '') return true
+  const prefixSlash = path + '/'
+  return projectMeta.some((p) => p.path.startsWith(prefixSlash))
 }
 
 export function getProjectRoutes(): RouteObject[] {
