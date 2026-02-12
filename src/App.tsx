@@ -102,7 +102,7 @@ function HomePage() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="h-10 rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
+                className="home-select h-10 rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
                 aria-label="Sort by"
               >
                 <option value="title-asc">Title A–Z</option>
@@ -114,7 +114,7 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  className={`home-view-toggle rounded-md px-3 py-1.5 text-sm font-medium ${
                     viewMode === 'list'
                       ? 'bg-[var(--klaviyo-burnt-sienna)] text-white'
                       : 'text-neutral-400 hover:text-neutral-200'
@@ -127,7 +127,7 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={() => setViewMode('tile')}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  className={`home-view-toggle rounded-md px-3 py-1.5 text-sm font-medium ${
                     viewMode === 'tile'
                       ? 'bg-[var(--klaviyo-burnt-sienna)] text-white'
                       : 'text-neutral-400 hover:text-neutral-200'
@@ -148,13 +148,13 @@ function HomePage() {
                   <li key={name}>
                     <Link
                       to={name}
-                      className="home-card-glow flex items-center gap-4 rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-4 transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                      className="home-card-glow group flex items-center gap-4 rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-4 hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
                     >
                       {preview != null ? (
                         <img
                           src={preview}
                           alt=""
-                          className="h-14 w-24 shrink-0 rounded-lg object-cover"
+                          className="h-14 w-24 shrink-0 rounded-lg object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
                         />
                       ) : (
                         <div className="h-14 w-24 shrink-0 rounded-lg bg-white/[0.06]" aria-hidden />
@@ -179,13 +179,13 @@ function HomePage() {
                   <li key={name}>
                     <Link
                       to={name}
-                      className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                      className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
                     >
                       {preview != null ? (
                         <img
                           src={preview}
                           alt=""
-                          className="aspect-video w-full object-cover transition-transform group-hover:scale-[1.02]"
+                          className="aspect-video w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
                         />
                       ) : (
                         <div className="aspect-video w-full bg-white/[0.06]" aria-hidden />
@@ -223,7 +223,7 @@ function NotFoundPage() {
       <p className="mb-6 text-neutral-400">Page not found.</p>
       <Link
         to="/"
-        className="rounded-lg bg-[var(--klaviyo-burnt-sienna)] px-4 py-2 font-medium text-white transition-colors hover:opacity-90"
+        className="home-back-link rounded-lg bg-[var(--klaviyo-burnt-sienna)] px-4 py-2 font-medium text-white hover:opacity-90"
       >
         Back to home
       </Link>

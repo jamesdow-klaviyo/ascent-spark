@@ -59,15 +59,46 @@ body {
     0 0 48px rgba(239, 99, 81, 0.08);
 }
 
-/* Subtle card glow on hover */
+/* Transitions: shared timing */
+.home-transition {
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* Subtle card glow + hover lift */
 .home-card-glow {
-  transition: box-shadow 0.2s ease;
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease;
 }
 .home-card-glow:hover {
   box-shadow: 0 0 24px rgba(239, 99, 81, 0.06);
+  transform: translateY(-2px);
 }
 
-/* Very subtle glow on focused input */
+/* Input/select: smooth border and glow */
+.home-input-glow,
+.home-select {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
 .home-input-glow:focus {
   box-shadow: 0 0 0 1px var(--klaviyo-burnt-sienna), 0 0 16px rgba(239, 99, 81, 0.08);
+}
+
+/* View toggle buttons */
+.home-view-toggle {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* 404 back link */
+.home-back-link {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.home-back-link:hover {
+  transform: translateY(-1px);
 }
