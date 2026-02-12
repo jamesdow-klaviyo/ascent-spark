@@ -35,28 +35,6 @@ function useBrowseFilter(): BrowseFilterContext {
   return ctx
 }
 
-function filterAndSort(
-  list: ProjectMeta[],
-  search: string,
-  sort: SortKey
-): ProjectMeta[] {
-  const q = search.trim().toLowerCase()
-  const out = q
-    ? list.filter(
-        (p) =>
-          (p.name ?? '').toLowerCase().includes(q) ||
-          (p.title ?? '').toLowerCase().includes(q) ||
-          (p.description ?? '').toLowerCase().includes(q)
-      )
-    : [...list]
-  const asc = sort === 'name-asc'
-  out.sort((a, b) => {
-    const cmp = (a.name ?? '').localeCompare(b.name ?? '', undefined, { sensitivity: 'base' })
-    return asc ? cmp : -cmp
-  })
-  return out
-}
-
 function FilterBar() {
   const { search, setSearch, sort, setSort, viewMode, setViewMode } = useBrowseFilter()
   return (
@@ -139,7 +117,7 @@ function BrowseContent({ prefix }: { prefix: string }) {
   const projects = useMemo(() => getChildProjects(prefix), [prefix])
   const items: BrowseItem[] = useMemo(() => {
     const list: BrowseItem[] = folders.map((name) => ({ type: 'folder', path: prefix ? `${prefix}/${name}` : name, name }))
-    list.push(...projects.map((meta) => ({ type: 'project', meta })))
+    list.push(...projects.map((meta): BrowseItem => ({ type: 'project', meta })))
     const q = search.trim().toLowerCase()
     const filtered = q
       ? list.filter((item) => {
@@ -257,7 +235,7 @@ function Breadcrumb({ prefix }: { prefix: string }) {
     <nav className="mb-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-neutral-400" aria-label="Breadcrumb">
       {breadcrumb.map((item, i) => (
         <span key={item.path} className="flex items-center gap-1.5">
-          {i > 0 && <ChevronRight className="h-4 w-4 rotate-180" />}
+          {i > 0 && <ChevronRight className="h-4 w-4 rotate-180 shrink-0" aria-hidden />}
           {i === breadcrumb.length - 1 ? (
             <span className="text-white">{item.title}</span>
           ) : (
