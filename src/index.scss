@@ -25,12 +25,55 @@ body {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
+.home-page-bg {
+  position: relative;
+}
+
+/* Ambient "screen" glow behind content */
+.home-page-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 50% at 50% -10%,
+    rgba(239, 99, 81, 0.08) 0%,
+    rgba(239, 99, 81, 0.03) 40%,
+    transparent 70%
+  );
+  z-index: 0;
+}
+
+.home-page-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
 .home-page-bg a {
   color: inherit;
 }
 
+/* Stronger spaceship-style title glow */
 .home-title-glow {
   text-shadow:
-    0 0 20px rgba(239, 99, 81, 0.2),
-    0 0 40px rgba(239, 99, 81, 0.1);
+    0 0 20px rgba(239, 99, 81, 0.5),
+    0 0 40px rgba(239, 99, 81, 0.35),
+    0 0 60px rgba(239, 99, 81, 0.25),
+    0 0 80px rgba(239, 99, 81, 0.15);
+}
+
+/* Glowing cards / panels on hover */
+.home-card-glow {
+  transition: box-shadow 0.2s ease;
+}
+.home-card-glow:hover {
+  box-shadow:
+    0 0 20px rgba(239, 99, 81, 0.15),
+    0 0 40px rgba(239, 99, 81, 0.08),
+    inset 0 0 0 1px rgba(239, 99, 81, 0.1);
+}
+
+/* Subtle glow on focused inputs */
+.home-input-glow:focus {
+  box-shadow: 0 0 0 1px var(--klaviyo-burnt-sienna), 0 0 20px rgba(239, 99, 81, 0.2);
 }

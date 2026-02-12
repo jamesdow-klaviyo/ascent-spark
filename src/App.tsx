@@ -96,7 +96,7 @@ function HomePage() {
                 placeholder="Search projects…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-10 flex-1 min-w-[200px] rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 placeholder-neutral-500 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
+                className="home-input-glow h-10 flex-1 min-w-[200px] rounded-lg border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] px-3 text-neutral-100 placeholder-neutral-500 focus:border-[var(--klaviyo-burnt-sienna)] focus:outline-none focus:ring-1 focus:ring-[var(--klaviyo-burnt-sienna)]/50"
                 aria-label="Search projects"
               />
               <select
@@ -148,7 +148,7 @@ function HomePage() {
                   <li key={name}>
                     <Link
                       to={name}
-                      className="flex items-center gap-4 rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-4 transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                      className="home-card-glow flex items-center gap-4 rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] p-4 transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
                     >
                       {preview != null ? (
                         <img
@@ -179,7 +179,7 @@ function HomePage() {
                   <li key={name}>
                     <Link
                       to={name}
-                      className="group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
+                      className="home-card-glow group flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-[var(--klaviyo-bg-elevated)] transition-colors hover:border-[var(--klaviyo-burnt-sienna)]/30 hover:bg-white/[0.06]"
                     >
                       {preview != null ? (
                         <img
