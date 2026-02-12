@@ -75,7 +75,7 @@ function HomePage() {
   }, [hasMore, loadMore, visible.length])
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/40 to-indigo-950 text-slate-100">
+    <main className="min-h-screen bg-gradient-to-br from-[#0a0c10] via-slate-950/50 to-[#07090d] text-slate-100">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <h1 className="home-title-glow mb-2 text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
           Projects
@@ -96,13 +96,13 @@ function HomePage() {
                 placeholder="Search projects…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-10 flex-1 min-w-[200px] rounded-lg border border-white/20 bg-white/10 px-3 text-slate-100 placeholder-slate-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                className="h-10 flex-1 min-w-[200px] rounded-lg border border-white/15 bg-white/5 px-3 text-slate-100 placeholder-slate-500 focus:border-sky-500/50 focus:outline-none focus:ring-1 focus:ring-sky-500/40"
                 aria-label="Search projects"
               />
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="h-10 rounded-lg border border-white/20 bg-white/10 px-3 text-slate-100 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                className="h-10 rounded-lg border border-white/15 bg-white/5 px-3 text-slate-100 focus:border-sky-500/50 focus:outline-none focus:ring-1 focus:ring-sky-500/40"
                 aria-label="Sort by"
               >
                 <option value="title-asc">Title A–Z</option>
@@ -110,13 +110,13 @@ function HomePage() {
                 <option value="name-asc">Name A–Z</option>
                 <option value="name-desc">Name Z–A</option>
               </select>
-              <div className="flex rounded-lg border border-white/20 bg-white/10 p-0.5">
+              <div className="flex rounded-lg border border-white/15 bg-white/5 p-0.5">
                 <button
                   type="button"
                   onClick={() => setViewMode('list')}
                   className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                     viewMode === 'list'
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-slate-600 text-white'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                   aria-label="List view"
@@ -129,7 +129,7 @@ function HomePage() {
                   onClick={() => setViewMode('tile')}
                   className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                     viewMode === 'tile'
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-slate-600 text-white'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                   aria-label="Tile view"
@@ -216,14 +216,14 @@ function HomePage() {
 
 function NotFoundPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950/40 to-indigo-950 px-4 text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#0a0c10] via-slate-950/50 to-[#07090d] px-4 text-center">
       <h1 className="home-title-glow mb-4 text-6xl font-bold text-white sm:text-8xl">
         404
       </h1>
       <p className="mb-6 text-slate-400">Page not found.</p>
       <Link
         to="/"
-        className="rounded-lg bg-violet-600 px-4 py-2 font-medium text-white transition-colors hover:bg-violet-500"
+        className="rounded-lg bg-slate-600 px-4 py-2 font-medium text-white transition-colors hover:bg-slate-500"
       >
         Back to home
       </Link>
