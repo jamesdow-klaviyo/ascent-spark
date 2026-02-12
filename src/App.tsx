@@ -94,7 +94,7 @@ function FilterBar() {
 
 function BrowseLayout() {
   const location = useLocation()
-  const atRoot = location.pathname === '/' || location.pathname === ''
+  const prefix = location.pathname === '/' || location.pathname === '' ? '' : location.pathname.replace(/^\//, '')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortKey>('name-asc')
   const [viewMode, setViewMode] = useState<ViewMode>('tile')
@@ -106,18 +106,15 @@ function BrowseLayout() {
     <main className="home-page-bg min-h-screen text-neutral-100">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 text-center">
         <BrowseFilterContext.Provider value={value}>
-          {atRoot && (
-            <>
-              <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-                <span className="home-title-wrap">
-                  <span className="home-title-gradient">Ascent Spark</span>
-                </span>
-              </h1>
-              <p className="mb-10 text-neutral-400">
-                Projects and folders in <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">projects/</code>. Open a folder or a project.
-              </p>
-            </>
-          )}
+          <h1 className="mb-2 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+            <span className="home-title-wrap">
+              <span className="home-title-gradient">Ascent Spark</span>
+            </span>
+          </h1>
+          <p className="mb-10 text-neutral-400">
+            Projects and folders in <code className="rounded bg-[var(--klaviyo-bg-elevated)] px-1.5 py-0.5 font-mono text-sm text-neutral-300">projects/</code>. Open a folder or a project.
+          </p>
+          <Breadcrumb prefix={prefix} />
           <FilterBar />
           <Outlet />
         </BrowseFilterContext.Provider>
@@ -249,7 +246,6 @@ function BrowseContent({ prefix }: { prefix: string }) {
 
 function Breadcrumb({ prefix }: { prefix: string }) {
   const breadcrumb = useMemo(() => getBreadcrumb(prefix), [prefix])
-  if (breadcrumb.length <= 1) return null
   return (
     <nav className="mb-6 flex flex-wrap items-center justify-start gap-1.5 text-sm text-neutral-400" aria-label="Breadcrumb">
       {breadcrumb.map((item, i) => (
@@ -283,12 +279,7 @@ function FolderPage() {
       </div>
     )
   }
-  return (
-    <>
-      <Breadcrumb prefix={path} />
-      <BrowseContent prefix={path} />
-    </>
-  )
+  return <BrowseContent prefix={path} />
 }
 
 function NotFoundPage() {
