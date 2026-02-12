@@ -202,7 +202,7 @@ function BrowseContent({ prefix }: { prefix: string }) {
         if (viewMode === 'list') {
           return (
             <li key={path} className="relative overflow-hidden rounded-xl">
-              <Link to={`/${path}`} className={linkClass + ' flex items-stretch gap-0 overflow-hidden'}>
+              <Link to={`/${path}`} className={linkClass + ' flex-row items-stretch gap-0 overflow-hidden'}>
                 {preview != null ? (
                   <span className="flex min-h-full w-24 shrink-0 items-stretch justify-start overflow-hidden bg-white/[0.06] sm:w-40">
                     <img src={preview} alt="" className="block h-full min-h-full w-full flex-shrink-0 object-cover object-left transition-transform duration-300 ease-out group-hover:scale-[1.02]" />
