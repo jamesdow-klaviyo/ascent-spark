@@ -2,7 +2,7 @@ import "./tailwind.css";
 import "./index.scss";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Star, Archive, Trash2, Inbox, Star as StarIcon, PenSquare, Search } from "lucide-react";
+import { Star, Archive, Trash2, Inbox as InboxIcon, Star as StarIcon, PenSquare, Search } from "lucide-react";
 
 export const title = "Inbox Zero";
 export const description =
@@ -111,7 +111,7 @@ export default function Inbox() {
             onClick={() => setView("inbox")}
             className={`gmail-nav-item ${view === "inbox" ? "active" : ""}`}
           >
-            <Inbox size={20} strokeWidth={1.5} />
+            <InboxIcon size={20} strokeWidth={1.5} />
             Inbox
             {emails.length > 0 && (
               <span className="ml-auto text-xs font-medium text-muted-foreground">
