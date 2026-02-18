@@ -2,7 +2,7 @@ import "./tailwind.css";
 import "./index.scss";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Star, Archive, Trash2, Inbox as InboxIcon, Star as StarIcon, PenSquare, Search } from "lucide-react";
+import { Star, Archive, Trash2, Inbox as InboxIcon, Star as StarIcon, Plus, Search, Menu, ChevronDown } from "lucide-react";
 
 export const title = "Inbox Zero";
 export const description =
