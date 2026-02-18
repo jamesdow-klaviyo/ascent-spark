@@ -4,9 +4,41 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+/** SPA fallback: serve index.html for client routes so direct URLs and refresh work. */
+function spaFallback() {
+  return {
+    name: 'spa-fallback',
+    apply: 'serve',
+    configureServer(server: { middlewares: { use: (fn: (req: any, res: any, next: () => void) => void) => void } }) {
+      server.middlewares.use((req, _res, next) => {
+        const url = req.url ?? ''
+        // Skip Vite internals, static assets, and requests with file extensions
+        if (url.startsWith('/@') || url.startsWith('/node_modules') || url.includes('.')) {
+          return next()
+        }
+        if (req.method === 'GET' && url !== '/' && !url.startsWith('/?')) {
+          req.url = '/'
+        }
+        next()
+      })
+    },
+    configurePreviewServer(server: { middlewares: { use: (fn: (req: any, res: any, next: () => void) => void) => void } }) {
+      server.middlewares.use((req, _res, next) => {
+        const url = req.url ?? ''
+        if (url.startsWith('/@') || url.includes('.')) return next()
+        if (req.method === 'GET' && url !== '/' && url !== '/index.html') {
+          req.url = '/index.html'
+        }
+        next()
+      })
+    },
+  }
+}
+
 export default defineConfig({
+  appType: 'spa',
   base: process.env.BASE_PATH || '/',
-  plugins: [react(), tailwindcss()],
+  plugins: [spaFallback(), react(), tailwindcss()],
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
