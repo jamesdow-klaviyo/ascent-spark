@@ -14,6 +14,8 @@
   --ring: oklch(0.45 0.12 260);
   --success: oklch(0.55 0.18 145);
   --success-muted: oklch(0.92 0.04 145);
+  /* App chrome: header + sidebar (not white); only content area is white */
+  --chrome-bg: oklch(0.965 0.006 260);
 }
 
 @layer base {
@@ -41,13 +43,13 @@
   color: var(--success);
 }
 
-/* Chrome: header + sidebar (Fender-style) */
+/* Chrome: header + sidebar (Fender-style). App background is gray; only main content is white. */
 .fender-chrome {
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--background);
+  background: var(--chrome-bg);
 }
 
 .fender-header {
@@ -60,9 +62,9 @@
   padding-inline: 14px 1rem;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.4) 49.52%,
-    rgba(255, 255, 255, 0.8) 100%
+    color-mix(in oklch, var(--chrome-bg) 85%, white) 0%,
+    color-mix(in oklch, var(--chrome-bg) 95%, white) 50%,
+    var(--chrome-bg) 100%
   );
   backdrop-filter: blur(5px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -80,14 +82,14 @@
   display: flex;
   align-items: center;
   width: auto;
-  height: 32px;
+  height: 20px;
   color: var(--foreground);
 }
 
 .fender-header__logo svg {
-  height: 32px;
+  height: 20px;
   width: auto;
-  max-width: 98px;
+  max-width: 56px;
 }
 
 .fender-header__search {
@@ -186,7 +188,7 @@
 .fender-sidebar {
   flex: 0 0 auto;
   height: 100%;
-  background: var(--card);
+  background: var(--chrome-bg);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -249,10 +251,11 @@
   flex: 1;
 }
 
+/* Match Fender sidebar icon size (20px) */
 .fender-sidebar__icon {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: inherit;
 }
 
@@ -284,12 +287,13 @@
   background: var(--muted);
 }
 
+/* Only the content area is white */
 .fender-chrome__main {
   flex: 1 1 auto;
   overflow: auto;
-  background: var(--background);
+  background: var(--card);
   border-radius: 12px;
   border: 1px solid var(--border);
   margin: 0 8px 8px 0;
-  box-shadow: 0 0 0 10px var(--card);
+  box-shadow: 0 0 0 10px var(--chrome-bg);
 }
