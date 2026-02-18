@@ -3,6 +3,7 @@ import "./index.scss";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Star, Archive, Trash2, Inbox as InboxIcon, Star as StarIcon, Plus, Search, Menu, ChevronDown } from "lucide-react";
+import inboxBeforeImg from "./assets/inbox-before.png";
 
 export const title = "Inbox Zero";
 export const description =
@@ -179,9 +180,21 @@ export default function Inbox() {
                   : "No mail here."}
               </p>
               {emails.length === 0 && (
-                <p className="mt-1 text-sm font-medium text-foreground">
-                  Inbox zero! Nice work.
-                </p>
+                <>
+                  <p className="mt-1 text-sm font-medium text-foreground">
+                    Inbox zero! Nice work.
+                  </p>
+                  <figure className="mt-6 max-w-xl">
+                    <img
+                      src={inboxBeforeImg}
+                      alt="Inbox before clearing — full inbox with Primary, Social, and Promotions tabs"
+                      className="w-full rounded-lg border border-border shadow-sm"
+                    />
+                    <figcaption className="mt-2 text-xs text-muted-foreground">
+                      Before you cleared it
+                    </figcaption>
+                  </figure>
+                </>
               )}
             </div>
           ) : (
